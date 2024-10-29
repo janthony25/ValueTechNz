@@ -1,7 +1,24 @@
+using Microsoft.EntityFrameworkCore;
+using ValueTechNz.Data;
+using ValueTechNz.Repository;
+using ValueTechNz.Repository.IRepository;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
+
+// Repositories and Log
+builder.Services.AddLogging();  
+builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// Razor runtime compilation
+builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
 var app = builder.Build();
 
