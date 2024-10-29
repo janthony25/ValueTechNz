@@ -27,19 +27,9 @@
             <th>Action</th>
         </tr>
     </thead>
-    <tbody id="productTblBody">
-        @foreach(var product in Model)
-        {
-            <tr>
-                <td>@product.ProductId</td>
-                <td>@product.ProductName</td>
-                <td>@product.Brand</td>
-                <td>@product.CategoryName</td>
-                <td>@(product.Price)$</td>
-                <td><img src="/img/@product.ImageFileName" width=100 /></td>
-                <td>@product.DateAdded.ToString("MM/dd/yyyy")</td>
-                <td></td>
-            </tr>
-        }
+    <tbody id="productTableBody">
     </tbody>
 </table>
+
+
+<script src="~/js/products.js"></script>

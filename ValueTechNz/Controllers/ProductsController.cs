@@ -14,10 +14,15 @@ namespace ValueTechNz.Controllers
             _logger = logger;
         }
 
+        public async Task<IActionResult> Products()
+        {
+            return View();
+        }
+
         public async Task<IActionResult> GetProducts()
         {
             var products = await _unitOfWork.Products.GetAllProductsAsync();
-            return View(products);
+            return Json(products);
         }
     }
 }
