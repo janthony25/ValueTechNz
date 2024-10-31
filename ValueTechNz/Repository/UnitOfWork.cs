@@ -12,7 +12,10 @@ namespace ValueTechNz.Repository
             _data = data;
             _loggerFactory = loggerFactory;
             Products = new ProductsRepository(_data, _loggerFactory);
+            Category = new CategoryRepository(_data, _loggerFactory);
         }
         public IProductsRepository Products { get; private set; }
+
+        public ICategoryRepository Category { get; private set; }
     }
 }

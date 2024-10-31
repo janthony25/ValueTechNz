@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ValueTechNz.Data;
+using ValueTechNz.Models;
 using ValueTechNz.Models.Dto;
 using ValueTechNz.Repository.IRepository;
 
@@ -16,6 +17,8 @@ namespace ValueTechNz.Repository
             _data = data;
             _logger = loggerFactory.CreateLogger<ProductsRepository>();
         }
+
+
         public async Task<List<GetProductsDto>> GetAllProductsAsync()
         {
             try

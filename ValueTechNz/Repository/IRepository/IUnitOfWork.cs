@@ -3,5 +3,6 @@
     public interface IUnitOfWork
     {
         IProductsRepository Products { get; }
+        ICategoryRepository Category { get; }
     }
 }
