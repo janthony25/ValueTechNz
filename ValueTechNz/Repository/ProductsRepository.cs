@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.CodeDom;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Metadata;
 using ValueTechNz.Data;
@@ -140,6 +141,75 @@ namespace ValueTechNz.Repository
             catch(Exception ex)
             {
                 _logger.LogError(ex, $"An error occurred while fetching product details with id {id}");
+                throw;
+            }
+        }
+
+        public async Task UpdateProductAsync(int id, AddUpdateProductDto updateProductDto)
+        {
+            try
+            {
+                // Find product by ID
+                var product = await _data.Products.FindAsync(id);
+
+                if (product == null || product.ProductId == 0)
+                {
+                    _logger.LogError($"Product with id {id} not found.");
+                    throw new KeyNotFoundException("Product not found.");
+                }
+
+                // Update the image file if we want a new one
+                string newFileName = product.ImageFileName;
+                if(updateProductDto.ImageFile != null && updateProductDto.ImageFile.Length > 1)
+                {
+                    newFileName = DateTime.Now.ToString("yyyyMMddHHssfff");
+                    newFileName += Path.GetExtension(updateProductDto.ImageFile.FileName);
+
+                    string imageFullPath = _environment.WebRootPath + "/img/" + newFileName;
+                    using (var stream = System.IO.File.Create(imageFullPath))
+                    {
+                        updateProductDto.ImageFile.CopyTo(stream);
+                    }
+
+                    // delete the old image
+                    string oldImageFullPath = _environment.WebRootPath + "/img/" + product.ImageFileName;
+                    System.IO.File.Delete(oldImageFullPath);
+                }
+
+
+                // Update product details
+                product.ProductName = updateProductDto.ProductName;
+                product.Brand = updateProductDto.Brand;
+                product.Price = updateProductDto.Price;
+                product.Description = updateProductDto.Description;
+                product.ImageFileName = newFileName;
+                product.DateUpdated = DateTime.Now;
+
+                // Find Product Category relationship
+                var existingProductCategory = await _data.ProductCategories
+                        .FirstOrDefaultAsync(pc => pc.ProductId == product.ProductId);
+                
+                // Update <Product Category> if the category has been changed
+                if (existingProductCategory.CategoryId != updateProductDto.CategoryId)
+                {
+                    // Remove existing relationship
+                    _data.ProductCategories.Remove(existingProductCategory);
+
+                    // Create new relationship
+                    var newProductCategory = new ProductCategory
+                    {
+                        ProductId = product.ProductId,
+                        CategoryId = updateProductDto.CategoryId
+                    };
+
+                    await _data.ProductCategories.AddAsync(newProductCategory);
+                }
+
+                await _data.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while updatind product with id {id}");
                 throw;
             }
         }

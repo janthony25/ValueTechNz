@@ -25,8 +25,8 @@ async function loadProducts() {
                         <td><img src="/img/${product.imageFileName}" width="100"></td>
                         <td>${new Date(product.dateAdded).toLocaleDateString()}</td>
                         <td>
-                            <a class="btn btn-primary btn-sm" data-product-id="${product.productId}">Edit</a>
-                            <a class="btn btn-primary btn-sm" data-product-id="${product.productId}">Delete</a>
+                            <a class="btn btn-primary btn-sm" href="/Products/UpdateProduct/${product.productId}">Edit</a>
+                            <a class="btn btn-primary btn-sm" >Delete</a>
                         </td>
                      </tr>`;
             tbody.innerHTML += row;

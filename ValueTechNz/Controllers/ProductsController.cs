@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
 using ValueTechNz.Models.Dto;
 using ValueTechNz.Models.ViewModels;
 using ValueTechNz.Repository.IRepository;
@@ -25,8 +26,17 @@ namespace ValueTechNz.Controllers
         // GET : Populate product list
         public async Task<IActionResult> GetProducts()
         {
-            var products = await _unitOfWork.Products.GetAllProductsAsync();
-            return Json(products);
+            try
+            {
+                var products = await _unitOfWork.Products.GetAllProductsAsync();
+                return Json(products);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching the product list.");
+                TempData["ErrorMessage"] = "An error occurred while retrieving product list.";
+                return Json(new { success = false, message = "An error occurred while retrieving product list." });
+            }
         }
 
         // GET : Add Products page
@@ -72,11 +82,13 @@ namespace ValueTechNz.Controllers
         }
 
         // GET : Edit product VIEW PAGE
-        public async Task<IActionResult> EditProduct(int id)
+        [HttpGet("Products/UpdateProduct/{id}")]
+        public async Task<IActionResult> UpdateProduct(int id)
         {
             try
             {
                 _logger.LogInformation($"Request to retrieve details of product with id {id}");
+                ViewBag.CategoryList = await _unitOfWork.Category.GetCategoryListAsync();
                 var product = await _unitOfWork.Products.GetProductByIdAsync(id);
                 return View(product);
             }
@@ -91,6 +103,37 @@ namespace ValueTechNz.Controllers
                 _logger.LogError(ex, $"An error occurred while fetching product details.");
                 TempData["ErrorMessage"] = "An error occurred while fetching product details.";
                 return View("Products");
+            }
+        }
+
+        // POST : Update product
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProduct(int id, AddUpdateProductDto updateProductDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    ViewBag.CategoryList = await _unitOfWork.Category.GetCategoryListAsync();
+                    return View(updateProductDto);
+                }
+
+                await _unitOfWork.Products.UpdateProductAsync(id, updateProductDto);
+                TempData["SuccessMessage"] = "Product successfully updated.";
+                return RedirectToAction("Products");
+            }
+            catch (KeyNotFoundException)
+            {
+                _logger.LogError($"Product with id {id} not found");
+                TempData["KeyNotFound"] = "Product not found";
+                return RedirectToAction("Products");
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating the product.");
+                TempData["ErrorMessage"] = "An error occurred while updating the product.";
+                return RedirectToAction("Products");
             }
         }
 

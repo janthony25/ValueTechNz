@@ -1,0 +1,67 @@
+﻿@model ValueTechNz.Models.Dto.AddUpdateProductDto
+
+@{
+}
+
+<div class="row">
+    <div class="col-md-8 mx-auto rounded border p-3">
+        <h2 class="text-center">New Product</h2>
+
+        <form method="post" asp-controller="Products" asp-action="UpdateProduct" enctype="multipart/form-data">
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label" asp-for="@Model.ProductName"></label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="@Model.ProductName" />
+                    <span asp-validation-for="@Model.ProductName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label" asp-for="@Model.Brand"></label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="@Model.Brand" />
+                    <span asp-validation-for="@Model.Brand" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label">Category</label>
+                <div class="col-sm-8">
+                    <select class="form-select" id="categorySelect" asp-for="@Model.CategoryId">
+                        <option value="0">Select a Category</option>
+                        @foreach (var item in ViewBag.CategoryList)
+                        {
+                            <option value="@item.CategoryId">@item.CategoryName</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label" asp-for="@Model.Description"></label>
+                <div class="col-sm-8">
+                    <textarea class="form-control" asp-for="@Model.Description"></textarea>
+                    <span class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label class="col-sm-4 col-form-label" asp-for="@Model.ImageFile"></label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="@Model.ImageFile" />
+                    <span asp-validation-for="@Model.ImageFile"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="offset-sm-4 col-sm-4 d-grid">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+                <div class="col-sm-4">
+                    <a class="btn btn-secondary" asp-controller="Products" asp-action="Products">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
