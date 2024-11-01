@@ -32,24 +32,31 @@ namespace ValueTechNz.Controllers
         // GET : Add Products page
         public async Task<IActionResult> AddProduct()
         {
-            var categories = await _unitOfWork.Category.GetCategoryListAsync();
-
-            var viewModel = new ProductViewModel
-            {
-                Product = new AddUpdateProductDto
-                {
-                    ProductName = string.Empty,
-                    Brand = string.Empty,
-                    Price = 0,
-                    CategoryId = 0,
-                    CategoryName = string.Empty
-                },
-                CategoryList = categories
-            };
-
-            return View(viewModel);
+            ViewBag.CategoryList = await _unitOfWork.Category.GetCategoryListAsync();
+            return View();
         }
 
-       
+        // POST : Add New Product
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddProduct(AddUpdateProductDto addProductDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    ViewBag.CategoryList = await _unitOfWork.Category.GetCategoryListAsync();
+                    return View(addProductDto);
+                }
+                await _unitOfWork.Products.AddProductAsync(addProductDto);
+                return RedirectToAction("Products", "Products");
+
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Unable to add product.");
+                return View();
+            }
+        }
     }
 }

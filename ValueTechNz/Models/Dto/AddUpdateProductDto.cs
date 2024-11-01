@@ -16,9 +16,9 @@ namespace ValueTechNz.Models.Dto
         public IFormFile? ImageFile { get; set; }
         public DateTime? DateUpdated { get; set; }
         
-        public required int CategoryId { get; set; }
+        public int CategoryId { get; set; }
 
         [DisplayName("Category")]
-        public required string CategoryName { get; set; } 
+        public string? CategoryName { get; set; } 
     }
 }

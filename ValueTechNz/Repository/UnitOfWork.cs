@@ -7,11 +7,13 @@ namespace ValueTechNz.Repository
     {
         private readonly DataContext _data;
         private readonly ILoggerFactory _loggerFactory;
-        public UnitOfWork(DataContext data, ILoggerFactory loggerFactory)
+        private readonly IWebHostEnvironment _environment;
+        public UnitOfWork(DataContext data, ILoggerFactory loggerFactory, IWebHostEnvironment environment)
         {
             _data = data;
             _loggerFactory = loggerFactory;
-            Products = new ProductsRepository(_data, _loggerFactory);
+            _environment = environment;
+            Products = new ProductsRepository(_data, _loggerFactory, _environment);
             Category = new CategoryRepository(_data, _loggerFactory);
         }
         public IProductsRepository Products { get; private set; }

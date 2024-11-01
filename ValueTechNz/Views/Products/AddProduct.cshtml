@@ -1,7 +1,6 @@
-﻿@model ValueTechNz.Models.ViewModels.ProductViewModel
+﻿@model ValueTechNz.Models.Dto.AddUpdateProductDto
 
 @{
-    var product = Model.Product;
 }
 
 <div class="row">
@@ -9,29 +8,28 @@
         <h2 class="text-center">New Product</h2>
 
         <form method="post" enctype="multipart/form-data">
-            <label asp-for="@product.ProductId"></label>
             <div class="row mb-3">
-                <label class="col-sm-4 col-form-label" asp-for="@product.ProductName"></label>
+                <label class="col-sm-4 col-form-label" asp-for="@Model.ProductName"></label>
                 <div class="col-sm-8">
-                    <input class="form-control" asp-for="@product.ProductName" />
-                    <span asp-validation-for="@product.ProductName" class="text-danger"></span>
+                    <input class="form-control" asp-for="@Model.ProductName" />
+                    <span asp-validation-for="@Model.ProductName" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="row mb-3">
-                <label class="col-sm-4 col-form-label" asp-for="@product.Brand"></label>
+                <label class="col-sm-4 col-form-label" asp-for="@Model.Brand"></label>
                 <div class="col-sm-8">
-                    <input class="form-control" asp-for="@product.Brand" />
-                    <span asp-validation-for="@product.Brand" class="text-danger"></span>
+                    <input class="form-control" asp-for="@Model.Brand" />
+                    <span asp-validation-for="@Model.Brand" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="row mb-3">
-                <label class="col-sm-4 col-form-label" asp-for="@product.CategoryName"></label>
+                <label class="col-sm-4 col-form-label">Category</label>
                 <div class="col-sm-8">
-                    <select class="form-select" asp-for="@product.CategoryId">
+                    <select class="form-select" asp-for="@Model.CategoryId">
                         <option value="" >Select a Category</option>
-                        @foreach(var item in Model.CategoryList)
+                        @foreach(var item in ViewBag.CategoryList)
                         {
                             <option value="@item.CategoryId">@item.CategoryName</option>
                         }
@@ -40,18 +38,18 @@
             </div>
 
             <div class="row mb-3">
-                <label class="col-sm-4 col-form-label" asp-for="@product.Description"></label>
+                <label class="col-sm-4 col-form-label" asp-for="@Model.Description"></label>
                 <div class="col-sm-8">
-                    <textarea class="form-control" asp-for="@product.Description"></textarea>
+                    <textarea class="form-control" asp-for="@Model.Description"></textarea>
                     <span class="text-danger"></span>
                 </div>
             </div>
 
             <div class="row mb-3">
-                <label class="col-sm-4 col-form-label" asp-for="@product.ImageFile"></label>
+                <label class="col-sm-4 col-form-label" asp-for="@Model.ImageFile"></label>
                 <div class="col-sm-8">
-                    <input class="form-control" asp-for="@product.ImageFile" />
-                    <span asp-validation-for="@product.ImageFile"></span>
+                    <input class="form-control" asp-for="@Model.ImageFile" />
+                    <span asp-validation-for="@Model.ImageFile"></span>
                 </div>
             </div>
 
