@@ -2,6 +2,8 @@
     loadProducts();
 });
 
+
+
 async function loadProducts() {
     try {
         // Fetch products from GetProducts endpoint

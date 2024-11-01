@@ -27,13 +27,14 @@
             <div class="row mb-3">
                 <label class="col-sm-4 col-form-label">Category</label>
                 <div class="col-sm-8">
-                    <select class="form-select" asp-for="@Model.CategoryId">
-                        <option value="" >Select a Category</option>
+                    <select class="form-select" id="categorySelect" asp-for="@Model.CategoryId">
+                        <option value="0" >Select a Category</option>
                         @foreach(var item in ViewBag.CategoryList)
                         {
                             <option value="@item.CategoryId">@item.CategoryName</option>
                         }
                     </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
                 </div>
             </div>
 

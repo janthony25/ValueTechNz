@@ -32,8 +32,18 @@ namespace ValueTechNz.Controllers
         // GET : Add Products page
         public async Task<IActionResult> AddProduct()
         {
-            ViewBag.CategoryList = await _unitOfWork.Category.GetCategoryListAsync();
-            return View();
+            try
+            {
+                ViewBag.CategoryList = await _unitOfWork.Category.GetCategoryListAsync();
+                return View();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while loading the Add Product page.");
+                TempData["ErrorMessage"] = "An error occurred while loading the Add Product page.";
+                return RedirectToAction("Products");
+            }
+            
         }
 
         // POST : Add New Product
@@ -49,14 +59,40 @@ namespace ValueTechNz.Controllers
                     return View(addProductDto);
                 }
                 await _unitOfWork.Products.AddProductAsync(addProductDto);
-                return RedirectToAction("Products", "Products");
+                TempData["SuccessMessage"] = "Product added successfully.";
+                return RedirectToAction("Products");
 
             }
             catch(Exception ex)
             {
                 _logger.LogError(ex, "Unable to add product.");
+                TempData["ErrorMessage"] = "An error occurred while adding product.";
                 return View();
             }
         }
+
+        // GET : Edit product VIEW PAGE
+        public async Task<IActionResult> EditProduct(int id)
+        {
+            try
+            {
+                _logger.LogInformation($"Request to retrieve details of product with id {id}");
+                var product = await _unitOfWork.Products.GetProductByIdAsync(id);
+                return View(product);
+            }
+            catch(KeyNotFoundException)
+            {
+                _logger.LogError($"Product with id {id} not found.");
+                TempData["KeyNotFound"] = "Product not found.";
+                return View("Products");
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while fetching product details.");
+                TempData["ErrorMessage"] = "An error occurred while fetching product details.";
+                return View("Products");
+            }
+        }
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace ValueTechNz.Models.Dto
 {
@@ -15,8 +16,9 @@ namespace ValueTechNz.Models.Dto
         [DisplayName("Image")]
         public IFormFile? ImageFile { get; set; }
         public DateTime? DateUpdated { get; set; }
-        
-        public int CategoryId { get; set; }
+
+        [Range(1, int.MaxValue, ErrorMessage = "Please select a category.")]
+        public required int CategoryId { get; set; }
 
         [DisplayName("Category")]
         public string? CategoryName { get; set; } 

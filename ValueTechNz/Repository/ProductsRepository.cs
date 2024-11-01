@@ -85,6 +85,7 @@ namespace ValueTechNz.Repository
                 var products = await _data.Products
                     .Include(p => p.ProductCategory)
                         .ThenInclude(pc => pc.Category)
+                    .OrderByDescending(p => p.DateAdded)
                     .Select(p => new GetProductsDto
                     {
                         ProductId = p.ProductId,
@@ -103,6 +104,42 @@ namespace ValueTechNz.Repository
             catch(Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while trying to fetch product list.");
+                throw;
+            }
+        }
+
+        public async Task<AddUpdateProductDto> GetProductByIdAsync(int id)
+        {
+            try
+            {
+                // Fetch product by id
+                var product = await _data.Products
+                    .Include(p => p.ProductCategory)
+                        .ThenInclude(pc => pc.Category)
+                    .Where(pc => pc.ProductId == id)
+                    .Select(p => new AddUpdateProductDto
+                    {
+                        ProductId = p.ProductId,
+                        ProductName = p.ProductName,
+                        Brand = p.Brand,
+                        CategoryId = p.ProductCategory.Select(pc => pc.Category.CategoryId).FirstOrDefault(),
+                        Price = p.Price,
+                        Description = p.Description,
+                        DateUpdated = DateTime.Now
+                    }).FirstOrDefaultAsync();
+
+                if (product == null || product.ProductId == 0)
+                {
+                    _logger.LogWarning($"Product with id {id} not found.");
+                    throw new KeyNotFoundException("Product not found.");
+                }
+
+                _logger.LogInformation($"Fetch successful. Returning product with id {product.ProductId}.");
+                return product;
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while fetching product details with id {id}");
                 throw;
             }
         }

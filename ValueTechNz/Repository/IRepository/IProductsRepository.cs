@@ -6,5 +6,6 @@ namespace ValueTechNz.Repository.IRepository
     {
         Task<List<GetProductsDto>> GetAllProductsAsync();
         Task AddProductAsync(AddUpdateProductDto addProductDto);
+        Task<AddUpdateProductDto> GetProductByIdAsync(int id);
     }
 }
