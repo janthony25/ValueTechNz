@@ -2,6 +2,8 @@
 @model PaginatedList<ValueTechNz.Models.Dto.GetProductsDto>
 @{
     ViewData["Title"] = "Product List";
+    var currentSort = Context.Request.Query["sortColumn"].ToString();
+    var currentOrder = Context.Request.Query["sortOrder"].ToString();
 }
 
 <partial name="_Notification" />
@@ -24,13 +26,109 @@
 <table class="table">
     <thead>
         <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Brand</th>
-            <th>Category</th>
-            <th>Price</th>
+            <th>
+                <a asp-action="Products"
+                   asp-route-sortColumn="id"
+                   asp-route-sortOrder="@(currentSort == "id" && currentOrder == "asc" ? "desc" : "asc")"
+                   asp-route-search="@ViewData["CurrentSearch"]"
+                   class="text-dark text-decoration-none">
+                    ID
+                    @if (currentSort == "id")
+                    {
+                        <i class="bi @(currentOrder == "desc" ? "bi-sort-up" : "bi-sort-down")"></i>
+                    }
+                    else
+                    {
+                        <i class="bi bi-arrow-down-up small"></i>
+                    }
+                </a>
+            </th>
+            <th>
+                <a asp-action="Products"
+                   asp-route-sortColumn="name"
+                   asp-route-sortOrder="@(currentSort == "name" && currentOrder == "asc" ? "desc" : "asc")"
+                   asp-route-search="@ViewData["CurrentSearch"]"
+                   class="text-dark text-decoration-none">
+                    Name
+                    @if (currentSort == "name")
+                    {
+                        <i class="bi @(currentOrder == "desc" ? "bi-sort-up" : "bi-sort-down")"></i>
+                    }
+                    else
+                    {
+                        <i class="bi bi-arrow-down-up small"></i>
+                    }
+                </a>
+            </th>
+            <th>
+                <a asp-action="Products"
+                   asp-route-sortColumn="brand"
+                   asp-route-sortOrder="@(currentSort == "brand" && currentOrder == "asc" ? "desc" : "asc")"
+                   asp-route-search="@ViewData["CurrentSearch"]"
+                   class="text-dark text-decoration-none">
+                    Brand
+                    @if (currentSort == "brand")
+                    {
+                        <i class="bi @(currentOrder == "desc" ? "bi-sort-up" : "bi-sort-down")"></i>
+                    }
+                    else
+                    {
+                        <i class="bi bi-arrow-down-up small"></i>
+                    }
+                </a>
+            </th>
+            <th>
+                <a asp-action="Products"
+                   asp-route-sortColumn="category"
+                   asp-route-sortOrder="@(currentSort == "category" && currentOrder == "asc" ? "desc" : "asc")"
+                   asp-route-search="@ViewData["CurrentSearch"]"
+                   class="text-dark text-decoration-none">
+                    Category
+                    @if (currentSort == "category")
+                    {
+                        <i class="bi @(currentOrder == "desc" ? "bi-sort-up" : "bi-sort-down")"></i>
+                    }
+                    else
+                    {
+                        <i class="bi bi-arrow-down-up small"></i>
+                    }
+                </a>
+            </th>
+            <th>
+                <a asp-action="Products"
+                   asp-route-sortColumn="price"
+                   asp-route-sortOrder="@(currentSort == "price" && currentOrder == "asc" ? "desc" : "asc")"
+                   asp-route-search="@ViewData["CurrentSearch"]"
+                   class="text-dark text-decoration-none">
+                    Price
+                    @if (currentSort == "price")
+                    {
+                        <i class="bi @(currentOrder == "desc" ? "bi-sort-up" : "bi-sort-down")"></i>
+                    }
+                    else
+                    {
+                        <i class="bi bi-arrow-down-up small"></i>
+                    }
+                </a>
+            </th>
             <th>Image</th>
-            <th>DateAdded</th>
+            <th>
+                <a asp-action="Products"
+                   asp-route-sortColumn="dateadded"
+                   asp-route-sortOrder="@(currentSort == "dateadded" && currentOrder == "asc" ? "desc" : "asc")"
+                   asp-route-search="@ViewData["CurrentSearch"]"
+                   class="text-dark text-decoration-none">
+                    Date Added
+                    @if (currentSort == "dateadded")
+                    {
+                        <i class="bi @(currentOrder == "desc" ? "bi-sort-up" : "bi-sort-down")"></i>
+                    }
+                    else
+                    {
+                        <i class="bi-sort-down"></i>
+                    }
+                </a>
+            </th>
             <th>Action</th>
         </tr>
     </thead>

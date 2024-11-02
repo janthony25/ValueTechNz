@@ -106,7 +106,7 @@ namespace ValueTechNz.Repository
             }
         }
 
-        public async Task<PaginatedList<GetProductsDto>> GetPaginatedProductsAsync(int pageNumber, int pageSize, string? searchTerm)
+        public async Task<PaginatedList<GetProductsDto>> GetPaginatedProductsAsync(int pageNumber, int pageSize, string? searchTerm, string sortColumn = "DateAdded", string sortOrder = "desc")
         {
             try
             {
@@ -126,23 +126,35 @@ namespace ValueTechNz.Repository
                         );
                 }
 
-                var productQuery = query
-                        .OrderByDescending(p => p.DateAdded)
-                        .Select(p => new GetProductsDto
-                        {
-                            ProductId = p.ProductId,
-                            ProductName = p.ProductName,
-                            Brand = p.Brand,
-                            Price = p.Price,
-                            CategoryName = p.ProductCategory
-                                .Select(pc => pc.Category.CategoryName)
-                                .FirstOrDefault(),
-                            Description = p.Description,
-                            ImageFileName = p.ImageFileName,
-                            DateAdded = p.DateAdded
-                        });
+                // Apply sorting based on column
+                query = sortColumn.ToLower() switch
+                {
+                    "id" => sortOrder == "desc" ? query.OrderBy(p => p.ProductId) : query.OrderByDescending(p => p.ProductId),
+                    "name" => sortOrder == "desc" ? query.OrderBy(p => p.ProductName) : query.OrderByDescending(p => p.ProductName),
+                    "brand" => sortOrder == "desc" ? query.OrderBy(p => p.Brand) : query.OrderByDescending(p => p.Brand),
+                    "category" => sortOrder == "desc" ?
+                        query.OrderBy(p => p.ProductCategory.FirstOrDefault().Category.CategoryName) :
+                        query.OrderByDescending(p => p.ProductCategory.FirstOrDefault().Category.CategoryName),
+                    "price" => sortOrder == "desc" ? query.OrderBy(p => p.Price) : query.OrderByDescending(p => p.Price),
+                    "dateadded" => sortOrder == "desc" ? query.OrderBy(p => p.DateAdded) : query.OrderByDescending(p => p.DateAdded),
+                    _ => query.OrderByDescending(p => p.DateAdded)
+                };
 
-                return await PaginatedList<GetProductsDto>.CreateAsync(productQuery, pageNumber, pageSize);
+                var finalQuery = query.Select(p => new GetProductsDto
+                {
+                    ProductId = p.ProductId,
+                    ProductName = p.ProductName,
+                    Brand = p.Brand,
+                    Price = p.Price,
+                    CategoryName = p.ProductCategory
+                        .Select(pc => pc.Category.CategoryName)
+                        .FirstOrDefault(),
+                    Description = p.Description,
+                    ImageFileName = p.ImageFileName,
+                    DateAdded = p.DateAdded
+                });
+
+                return await PaginatedList<GetProductsDto>.CreateAsync(finalQuery, pageNumber, pageSize);
             }
             catch(Exception ex)
             {
