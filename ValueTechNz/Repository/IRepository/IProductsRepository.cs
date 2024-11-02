@@ -8,5 +8,6 @@ namespace ValueTechNz.Repository.IRepository
         Task AddProductAsync(AddUpdateProductDto addProductDto);
         Task<AddUpdateProductDto> GetProductByIdAsync(int id);
         Task UpdateProductAsync(int id, AddUpdateProductDto updateProductDto);
+        Task DeleteProductAsync(int id);
     }
 }

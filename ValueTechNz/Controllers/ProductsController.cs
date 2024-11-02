@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using ValueTechNz.Models.Dto;
 using ValueTechNz.Models.ViewModels;
 using ValueTechNz.Repository.IRepository;
@@ -137,5 +138,30 @@ namespace ValueTechNz.Controllers
             }
         }
 
+        // POST : Delete Product
+        [HttpPost("Products/DeleteProduct/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            try
+            {
+                _logger.LogInformation($"Request to delete product with id {id}");
+                await _unitOfWork.Products.DeleteProductAsync(id);
+                TempData["SuccessMessage"] = "Product successfully deleted.";
+                return Json(new { success = true });
+            }
+            catch (KeyNotFoundException)
+            {
+                _logger.LogInformation($"Product with id {id} not found.");
+                TempData["KeyNotFound"] = "Product not found.";
+                return RedirectToAction("Products");
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while deleting product with id {id}");
+                TempData["ErrorMessage"] = "An error occurred while deleting product.";
+                return RedirectToAction("Products");
+            }
+        }
     }
 }

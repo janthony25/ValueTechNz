@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="~/ValueTechNz.styles.css" asp-append-version="true" />
 </head>
 <body>
+    @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+    <input type="hidden" name="__RequestVerificationToken" value="@Xsrf.GetAndStoreTokens(Context).RequestToken" />
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">

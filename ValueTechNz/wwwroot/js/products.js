@@ -3,7 +3,6 @@
 });
 
 
-
 async function loadProducts() {
     try {
         // Fetch products from GetProducts endpoint
@@ -26,7 +25,7 @@ async function loadProducts() {
                         <td>${new Date(product.dateAdded).toLocaleDateString()}</td>
                         <td>
                             <a class="btn btn-primary btn-sm" href="/Products/UpdateProduct/${product.productId}">Edit</a>
-                            <a class="btn btn-primary btn-sm" >Delete</a>
+                            <a class="btn btn-primary btn-sm" onclick="deleteProduct(${product.productId})">Delete</a>
                         </td>
                      </tr>`;
             tbody.innerHTML += row;
@@ -34,5 +33,35 @@ async function loadProducts() {
     }
     catch (error) {
         console.log("Error loading products", error);
+    }
+}
+
+async function deleteProduct(productId) {
+    if (!confirm('Are you sure you want to delete this product?')) {
+        return;
+    }
+
+    try {
+        // Get the anti-forgery token
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+        const response = await fetch(`/Products/DeleteProduct/${productId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': token
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete product');
+        }
+
+        // Refresh the products list
+        window.location.reload();
+    }
+    catch (error) {
+        console.error('Error deleting product:', error);
+        toastr.error('Failed to delete product');
     }
 }

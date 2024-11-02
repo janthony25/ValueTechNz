@@ -78,6 +78,33 @@ namespace ValueTechNz.Repository
             }
         }
 
+        public async Task DeleteProductAsync(int id)
+        {
+            try
+            {
+                // Find product by ID
+                var product = await _data.Products.FindAsync(id);
+
+                if(product == null || product.ProductId == 0)
+                {
+                    _logger.LogError($"Unable to find product with id {id}");
+                    throw new KeyNotFoundException($"Unable to find product");
+                }
+
+                string imageFullPath = _environment.WebRootPath + "/img/" + product.ImageFileName;
+                System.IO.File.Delete(imageFullPath);
+
+                // Delete product 
+                _data.Products.Remove(product);
+                await _data.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while deleting the product.");
+                throw;
+            }
+        }
+
         public async Task<List<GetProductsDto>> GetAllProductsAsync()
         {
             try
