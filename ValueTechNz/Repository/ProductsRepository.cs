@@ -106,60 +106,43 @@ namespace ValueTechNz.Repository
             }
         }
 
-        public async Task<List<GetProductsDto>> GetAllProductsAsync()
-        {
-            try
-            {
-                // Get Products List
-                var products = await _data.Products
-                    .Include(p => p.ProductCategory)
-                        .ThenInclude(pc => pc.Category)
-                    .OrderByDescending(p => p.DateAdded)
-                    .Select(p => new GetProductsDto
-                    {
-                        ProductId = p.ProductId,
-                        ProductName = p.ProductName,
-                        Brand = p.Brand,
-                        Price = p.Price,
-                        CategoryName = p.ProductCategory.Select(pc => pc.Category.CategoryName).FirstOrDefault(),
-                        Description = p.Description,
-                        ImageFileName = p.ImageFileName,
-                    }).ToListAsync();
-
-                _logger.LogInformation($"Fetch successful! retrieved {products.Count} products.");
-                return products;
-                
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while trying to fetch product list.");
-                throw;
-            }
-        }
-
-        public async Task<PaginatedList<GetProductsDto>> GetPaginatedProductsAsync(int pageNumber, int pageSize)
+        public async Task<PaginatedList<GetProductsDto>> GetPaginatedProductsAsync(int pageNumber, int pageSize, string? searchTerm)
         {
             try
             {
                 var query = _data.Products
-                    .Include(p => p.ProductCategory)
-                        .ThenInclude(pc => pc.Category)
-                    .OrderByDescending(p => p.DateAdded)
-                    .Select(p => new GetProductsDto
-                    {
-                        ProductId = p.ProductId,
-                        ProductName = p.ProductName,
-                        Brand = p.Brand,
-                        Price = p.Price,
-                        CategoryName = p.ProductCategory
-                            .Select(pc => pc.Category.CategoryName)
-                            .FirstOrDefault(),
-                        Description = p.Description,
-                        ImageFileName = p.ImageFileName,
-                        DateAdded = p.DateAdded
-                    });
+                       .Include(p => p.ProductCategory)
+                           .ThenInclude(pc => pc.Category)
+                       .AsQueryable();
 
-                return await PaginatedList<GetProductsDto>.CreateAsync(query, pageNumber, pageSize);
+                // Apply search filter if searc term is provided
+                if (!string.IsNullOrWhiteSpace(searchTerm))
+                {
+                    searchTerm = searchTerm.ToLower();
+                    query = query.Where(p =>
+                        p.ProductName.ToLower().Contains(searchTerm) ||
+                        p.Brand.ToLower().Contains(searchTerm) ||
+                        p.ProductCategory.Any(pc => pc.Category.CategoryName.ToLower().Contains(searchTerm))
+                        );
+                }
+
+                var productQuery = query
+                        .OrderByDescending(p => p.DateAdded)
+                        .Select(p => new GetProductsDto
+                        {
+                            ProductId = p.ProductId,
+                            ProductName = p.ProductName,
+                            Brand = p.Brand,
+                            Price = p.Price,
+                            CategoryName = p.ProductCategory
+                                .Select(pc => pc.Category.CategoryName)
+                                .FirstOrDefault(),
+                            Description = p.Description,
+                            ImageFileName = p.ImageFileName,
+                            DateAdded = p.DateAdded
+                        });
+
+                return await PaginatedList<GetProductsDto>.CreateAsync(productQuery, pageNumber, pageSize);
             }
             catch(Exception ex)
             {

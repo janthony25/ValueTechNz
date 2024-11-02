@@ -21,11 +21,12 @@ namespace ValueTechNz.Controllers
         }
 
         // GET : Index for Product List
-        public async Task<IActionResult> Products(int pageNumber = 1)
+        public async Task<IActionResult> Products(int pageNumber = 1, string search = null)
         {
             try
             {
-                var products = await _unitOfWork.Products.GetPaginatedProductsAsync(pageNumber, pageSize);
+                ViewData["CurrentSearch"] = search;
+                var products = await _unitOfWork.Products.GetPaginatedProductsAsync(pageNumber, pageSize, search);
                 return View(products); 
             }
             catch (Exception ex)
