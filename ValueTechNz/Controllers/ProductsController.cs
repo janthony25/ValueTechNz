@@ -21,24 +21,20 @@ namespace ValueTechNz.Controllers
         // GET : Index for Product List
         public async Task<IActionResult> Products()
         {
-            return View();
-        }
-
-        // GET : Populate product list
-        public async Task<IActionResult> GetProducts()
-        {
             try
             {
                 var products = await _unitOfWork.Products.GetAllProductsAsync();
-                return Json(products);
+                return View(products);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while fetching the product list.");
                 TempData["ErrorMessage"] = "An error occurred while retrieving product list.";
                 return Json(new { success = false, message = "An error occurred while retrieving product list." });
             }
         }
+
+      
 
         // GET : Add Products page
         public async Task<IActionResult> AddProduct()
@@ -82,8 +78,7 @@ namespace ValueTechNz.Controllers
             }
         }
 
-        // GET : Edit product VIEW PAGE
-        [HttpGet("Products/UpdateProduct/{id}")]
+       
         public async Task<IActionResult> UpdateProduct(int id)
         {
             try
@@ -139,8 +134,6 @@ namespace ValueTechNz.Controllers
         }
 
         // POST : Delete Product
-        [HttpPost("Products/DeleteProduct/{id}")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             try
@@ -148,7 +141,7 @@ namespace ValueTechNz.Controllers
                 _logger.LogInformation($"Request to delete product with id {id}");
                 await _unitOfWork.Products.DeleteProductAsync(id);
                 TempData["SuccessMessage"] = "Product successfully deleted.";
-                return Json(new { success = true });
+                return RedirectToAction("Products");
             }
             catch (KeyNotFoundException)
             {

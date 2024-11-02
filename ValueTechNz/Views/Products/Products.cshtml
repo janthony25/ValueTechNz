@@ -30,7 +30,23 @@
             <th>Action</th>
         </tr>
     </thead>
-    <tbody id="productTableBody">
+    <tbody id="">
+        @foreach(var item in Model)
+        {
+            <tr>
+                <td>@item.ProductId</td>
+                <td>@item.ProductName</td>
+                <td>@item.Brand </td>
+                <td>@item.CategoryName</td>
+                <td>@item.Price</td>
+                <td><img src="/img/@item.ImageFileName" width="100"></td>
+                <td>@item.DateAdded.ToString("MM/dd/yyyy")</td>
+                <td>
+                    <a class="btn btn-primary btn-sm" asp-controller="Products" asp-action="UpdateProduct" asp-route-id="@item.ProductId">Edit</a>
+                    <a class="btn btn-primary btn-sm" asp-controller="Products" asp-action="DeleteProduct" asp-route-id="@item.ProductId" onclick="return confirm('Are you sure?')">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 @Html.AntiForgeryToken()
