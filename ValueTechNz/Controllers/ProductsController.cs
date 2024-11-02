@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using ValueTechNz.Helpers;
@@ -8,6 +9,7 @@ using ValueTechNz.Repository.IRepository;
 
 namespace ValueTechNz.Controllers
 {
+    [Route("/Admin/[controller]/{action=Products}/{id?}")]
     public class ProductsController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
