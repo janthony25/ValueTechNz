@@ -4,6 +4,7 @@ using System.CodeDom;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Metadata;
 using ValueTechNz.Data;
+using ValueTechNz.Helpers;
 using ValueTechNz.Models;
 using ValueTechNz.Models.Dto;
 using ValueTechNz.Repository.IRepository;
@@ -128,6 +129,37 @@ namespace ValueTechNz.Repository
                 _logger.LogInformation($"Fetch successful! retrieved {products.Count} products.");
                 return products;
                 
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while trying to fetch product list.");
+                throw;
+            }
+        }
+
+        public async Task<PaginatedList<GetProductsDto>> GetPaginatedProductsAsync(int pageNumber, int pageSize)
+        {
+            try
+            {
+                var query = _data.Products
+                    .Include(p => p.ProductCategory)
+                        .ThenInclude(pc => pc.Category)
+                    .OrderByDescending(p => p.DateAdded)
+                    .Select(p => new GetProductsDto
+                    {
+                        ProductId = p.ProductId,
+                        ProductName = p.ProductName,
+                        Brand = p.Brand,
+                        Price = p.Price,
+                        CategoryName = p.ProductCategory
+                            .Select(pc => pc.Category.CategoryName)
+                            .FirstOrDefault(),
+                        Description = p.Description,
+                        ImageFileName = p.ImageFileName,
+                        DateAdded = p.DateAdded
+                    });
+
+                return await PaginatedList<GetProductsDto>.CreateAsync(query, pageNumber, pageSize);
             }
             catch(Exception ex)
             {

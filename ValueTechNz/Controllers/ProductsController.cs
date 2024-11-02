@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using ValueTechNz.Helpers;
 using ValueTechNz.Models.Dto;
 using ValueTechNz.Models.ViewModels;
 using ValueTechNz.Repository.IRepository;
@@ -11,6 +12,7 @@ namespace ValueTechNz.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<ProductsController> _logger;
+        private const int pageSize = 10;
 
         public ProductsController(IUnitOfWork unitOfWork, ILogger<ProductsController> logger)
         {
@@ -19,18 +21,18 @@ namespace ValueTechNz.Controllers
         }
 
         // GET : Index for Product List
-        public async Task<IActionResult> Products()
+        public async Task<IActionResult> Products(int pageNumber = 1)
         {
             try
             {
-                var products = await _unitOfWork.Products.GetAllProductsAsync();
-                return View(products);
+                var products = await _unitOfWork.Products.GetPaginatedProductsAsync(pageNumber, pageSize);
+                return View(products); 
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while fetching the product list.");
                 TempData["ErrorMessage"] = "An error occurred while retrieving product list.";
-                return Json(new { success = false, message = "An error occurred while retrieving product list." });
+                return View(new PaginatedList<GetProductsDto>(new List<GetProductsDto>(), 0, pageNumber, pageSize));
             }
         }
 
