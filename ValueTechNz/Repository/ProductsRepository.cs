@@ -160,14 +160,14 @@ namespace ValueTechNz.Repository
                 // Apply sorting based on column
                 query = sortColumn.ToLower() switch
                 {
-                    "id" => sortOrder == "desc" ? query.OrderBy(p => p.ProductId) : query.OrderByDescending(p => p.ProductId),
-                    "name" => sortOrder == "desc" ? query.OrderBy(p => p.ProductName) : query.OrderByDescending(p => p.ProductName),
-                    "brand" => sortOrder == "desc" ? query.OrderBy(p => p.Brand) : query.OrderByDescending(p => p.Brand),
+                    "id" => sortOrder == "desc" ? query.OrderByDescending(p => p.ProductId) : query.OrderBy(p => p.ProductId),
+                    "name" => sortOrder == "desc" ? query.OrderByDescending(p => p.ProductName) : query.OrderBy(p => p.ProductName),
+                    "brand" => sortOrder == "desc" ? query.OrderByDescending(p => p.Brand) : query.OrderBy(p => p.Brand),
                     "category" => sortOrder == "desc" ?
-                        query.OrderBy(p => p.ProductCategory.FirstOrDefault().Category.CategoryName) :
-                        query.OrderByDescending(p => p.ProductCategory.FirstOrDefault().Category.CategoryName),
-                    "price" => sortOrder == "desc" ? query.OrderBy(p => p.Price) : query.OrderByDescending(p => p.Price),
-                    "dateadded" => sortOrder == "desc" ? query.OrderBy(p => p.DateAdded) : query.OrderByDescending(p => p.DateAdded),
+                        query.OrderByDescending(p => p.ProductCategory.FirstOrDefault().Category.CategoryName) :
+                        query.OrderBy(p => p.ProductCategory.FirstOrDefault().Category.CategoryName),
+                    "price" => sortOrder == "desc" ? query.OrderByDescending(p => p.Price) : query.OrderBy(p => p.Price),
+                    "dateadded" => sortOrder == "desc" ? query.OrderByDescending(p => p.DateAdded) : query.OrderBy(p => p.DateAdded),
                     _ => query.OrderByDescending(p => p.DateAdded)
                 };
 
