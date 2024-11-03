@@ -4,5 +4,6 @@
     {
         IProductsRepository Products { get; }
         ICategoryRepository Category { get; }
+        IStoreRepository Store { get; }
     }
 }

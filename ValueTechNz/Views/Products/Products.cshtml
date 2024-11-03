@@ -2,6 +2,7 @@
 @model PaginatedList<ValueTechNz.Models.Dto.GetProductsDto>
 @{
     ViewData["Title"] = "Product List";
+    ViewData["PaginationAction"] = "Products";
     var currentSort = Context.Request.Query["sortColumn"].ToString();
     var currentOrder = Context.Request.Query["sortOrder"].ToString();
 }

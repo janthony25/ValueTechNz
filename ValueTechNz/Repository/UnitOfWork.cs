@@ -15,9 +15,12 @@ namespace ValueTechNz.Repository
             _environment = environment;
             Products = new ProductsRepository(_data, _loggerFactory, _environment);
             Category = new CategoryRepository(_data, _loggerFactory);
+            Store = new StoreRepository(_data, _loggerFactory);
         }
         public IProductsRepository Products { get; private set; }
 
         public ICategoryRepository Category { get; private set; }
+
+        public IStoreRepository Store { get; private set; }
     }
 }

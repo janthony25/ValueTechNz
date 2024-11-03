@@ -9,7 +9,7 @@
             <ul class="pagination">
                 <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
                     <a class="page-link"
-                       asp-action="Products"
+                       asp-action="@ViewData["PaginationAction"]"
                        asp-route-pageNumber="@(Model.PageIndex - 1)"
                        asp-route-search="@search">Previous</a>
                 </li>
@@ -18,7 +18,7 @@
                 {
                     <li class="page-item @(i == Model.PageIndex ? "active" : "")">
                         <a class="page-link"
-                           asp-action="Products"
+                           asp-action="@ViewData["PaginationAction"]"
                            asp-route-pageNumber="@i"
                            asp-route-search="@search">@i</a>
                     </li>
@@ -26,7 +26,7 @@
 
                 <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
                     <a class="page-link"
-                       asp-action="Products"
+                       asp-action="@ViewData["PaginationAction"]"
                        asp-route-pageNumber="@(Model.PageIndex + 1)"
                        asp-route-search="@search">Next</a>
                 </li>
