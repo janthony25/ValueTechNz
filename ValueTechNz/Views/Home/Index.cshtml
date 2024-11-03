@@ -1,7 +1,11 @@
-﻿@{
+﻿@model List<ValueTechNz.Models.Dto.GetProductsDto>
+
+@{
     ViewData["Title"] = "Home Page";
     ViewData["HomePage"] = true;
 }
+
+<partial name="_Notification" />
 
 <div style="background-color: #08618d">
     <div class="container text-white py-5">
@@ -13,6 +17,36 @@
             <div class="col-md-6 text-center">
                 <img src="/img//Gadgets.png" class="img-fluid" style="max-width:80%" height="auto;" />
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-light">
+    <div class="container py-4">
+        <h2>Latest Products</h2>
+
+        <div class="row mb-5 g-3">
+            @foreach(var product in Model)
+            {
+                <div class="col-lg-3 col-md-6">
+                    <div class="d-flex flex-column justify-content-between rounded border shadow p-3 text-center h-100">
+                        <img src="/img/@product.ImageFileName" class="img-fluid" style="max-height: 180px; object-fit:contain;"/>
+                        <hr />
+                        <h5 class="py-2">@product.ProductName</h5>
+                        <p>
+                            Brand: @product.Brand, Category: @product.CategoryName
+                        </p>
+                        <h4 class="mb-3">@(product.Price)$</h4>
+                        <div class="d-flex justify-content-center">
+                            <a class="btn btn-primary btn-sm mb-2" href="#" role="button">Details</a>
+                            <button type="button" class="btn btn-warning btn-sm mb-2 ms-2">
+                                Add to Cart<i class="bi bi-cart4"></i>
+                            </button>
+                        </div>
+                      
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>

@@ -38,6 +38,14 @@
                 </div>
             </div>
 
+             <div class="row mb-3">
+                <label class="col-sm-4 col-form-label" asp-for="@Model.Price"></label>
+                <div class="col-sm-8">
+                    <input class="form-control" asp-for="@Model.Price" />
+                    <span asp-validation-for="@Model.Price" class="text-danger"></span>
+                </div>
+            </div>
+
             <div class="row mb-3">
                 <label class="col-sm-4 col-form-label" asp-for="@Model.Description"></label>
                 <div class="col-sm-8">
