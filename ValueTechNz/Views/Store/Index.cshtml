@@ -2,12 +2,48 @@
 @model PaginatedList<ValueTechNz.Models.Dto.GetProductsDto>
 @{
     ViewData["Title"] = "Products";
-    ViewData["PaginationAction"] = "Index";
+    var currentSearch = ViewData["CurrentSearch"] as string;
+    ViewBag.CurrentBrand = ViewBag.CurrentBrand ?? "";
+    ViewBag.CurrentCategory = ViewBag.CurrentCategory ?? "";
+    ViewBag.CurrentSort = ViewBag.CurrentSort ?? "";
 }
+
 
 <partial name="_Notification" />
 
 <h2 class="text-center mb-5"></h2>
+<form id="filterForm" class="row g-3 mb-3" method="get">
+    <div class="col-lg-2 col-md-4">
+        <select class="form-select filter-select" name="brand" id="brandFilter">
+            <option value="">All Brands</option>
+            <option value="Samsung" selected=@(ViewBag.CurrentBrand == "Samsung")>Samsung</option>
+            <option value="Apple" selected=@(ViewBag.CurrentBrand == "Apple")>Apple</option>
+            <option value="Intel" selected=@(ViewBag.CurrentBrand == "Intel")>Intel</option>
+            <option value="Ryzen" selected=@(ViewBag.CurrentBrand == "Ryzen")>Ryzen</option>
+        </select>
+    </div>
+    <div class="col-lg-2 col-md-4">
+        <select class="form-select filter-select" name="category" id="categoryFilter">
+            <option value="">All Categories</option>
+            @foreach (var category in ViewBag.Categories)
+            {
+                <option value="@category.CategoryName" selected=@(ViewBag.CurrentCategory == category.CategoryName)>@category.CategoryName</option>
+            }
+        </select>
+    </div>
+    <div class="col-lg-2 col-md-4">
+        <select class="form-select filter-select" name="sort" id="sortFilter">
+            <option value="newest" selected=@(ViewBag.CurrentSort == "newest")>Order by Newest</option>
+            <option value="price_asc" selected=@(ViewBag.CurrentSort == "price_asc")>Price: Low to High</option>
+            <option value="price_desc" selected=@(ViewBag.CurrentSort == "price_desc")>Price: High to Low</option>
+        </select>
+    </div>
+    <div class="col-lg-6 col-md-12 d-flex">
+        <input class="form-control me-2" name="search" id="searchInput" placeholder="Search by Name" value="@ViewData["CurrentSearch"]" />
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </div>
+</form>
+
 
 <div class="">
     <div class="container py-4">
@@ -40,3 +76,30 @@
 </div>
 
 <partial name="_Pagination" />
+@section Scripts {
+    <script>
+            document.addEventListener('DOMContentLoaded', function() {
+            // Add change event listeners to all filter selects
+            document.querySelectorAll('.filter-select').forEach(select => {
+                select.addEventListener('change', function() {
+                    document.getElementById('filterForm').submit();
+                    });
+            });
+
+            // Add keypress event listener to search input for Enter key
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                    e.preventDefault();
+                    document.getElementById('filterForm').submit();
+                }
+            });
+
+            // Prevent form submission on enter key for the entire form
+            document.getElementById('filterForm').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+}

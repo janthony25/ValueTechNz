@@ -15,7 +15,12 @@ namespace ValueTechNz.Repository
             _data = data;
             _logger = logger.CreateLogger<StoreRepository>();
         }
-        public async Task<PaginatedList<GetProductsDto>> GetStoreProductsAsync(int pageNumber, int pageSize, string? searchTerm)
+        public async Task<PaginatedList<GetProductsDto>> GetStoreProductsAsync(int pageNumber,
+                                                                              int pageSize,
+                                                                              string? searchTerm,
+                                                                              string? brand,
+                                                                              string? category,
+                                                                              string? sort)
         {
             try
             {
@@ -34,6 +39,27 @@ namespace ValueTechNz.Repository
                         p.ProductCategory.Any(pc => pc.Category.CategoryName.ToLower().Contains(searchTerm))
                         );
                 }
+
+                // Apply brand filter
+                if (!string.IsNullOrWhiteSpace(brand))
+                {
+                    query = query.Where(p => p.Brand.ToLower() == brand.ToLower());
+                }
+
+                // Apply category filter
+                if (!string.IsNullOrWhiteSpace(category))
+                {
+                    query = query.Where(p => p.ProductCategory.Any(pc => pc.Category.CategoryName.ToLower() == category.ToLower()));
+                }
+
+                // Apply sorting by date
+                query = sort?.ToLower() switch
+                {
+                    "price_asc" => query.OrderBy(p => p.Price),
+                    "price_desc" => query.OrderByDescending(p => p.Price),
+                    "newest" => query.OrderByDescending(p => p.DateAdded),
+                    _ => query.OrderByDescending(p => p.DateAdded)
+                };
 
                 var finalQuery = query.Select(p => new GetProductsDto
                 {

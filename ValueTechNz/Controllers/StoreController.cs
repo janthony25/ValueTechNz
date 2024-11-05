@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NPOI.OpenXmlFormats.Dml.Diagram;
+using ValueTechNz.Models;
 using ValueTechNz.Repository.IRepository;
 
 namespace ValueTechNz.Controllers
@@ -16,14 +18,29 @@ namespace ValueTechNz.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        public async  Task<IActionResult> Index(int pageNumber = 1, string search = null)
+        public async Task<IActionResult> Index(int pageNumber = 1, string search = null,
+                                               string brand = null, string category = null, string sort = null)
         {
             try
             {
+                // Store current filter values in ViewData to maintain state
                 ViewData["CurrentSearch"] = search;
-                var products = await _unitOfWork.Store.GetStoreProductsAsync(pageNumber,
-                                                                             pageSize,
-                                                                             search);
+                ViewBag.CurrentBrand = brand;
+                ViewBag.CurrentCategory = category;
+                ViewBag.CurrentSort = sort;
+
+
+                ViewBag.Categories = await _unitOfWork.Category.GetCategoryListAsync();
+
+                var products = await _unitOfWork.Store.GetStoreProductsAsync(
+                    pageNumber,
+                    pageSize,
+                    search,
+                    brand,
+                    category,
+                    sort
+                );
+
 
                 return View(products);
             }

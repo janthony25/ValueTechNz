@@ -5,6 +5,11 @@ namespace ValueTechNz.Repository.IRepository
 {
     public interface IStoreRepository
     {
-        Task<PaginatedList<GetProductsDto>> GetStoreProductsAsync(int pageNumber, int pageSize, string? searchTerm);
+        Task<PaginatedList<GetProductsDto>> GetStoreProductsAsync(int pageNumber,
+                                                                int pageSize,
+                                                                string? searchTerm,
+                                                                string? brand,
+                                                                string? category,
+                                                                string? sort);
     }
 }
