@@ -62,7 +62,7 @@
                         </p>
                         <h4 class="mb-3">@(product.Price)$</h4>
                         <div class="d-flex justify-content-center">
-                            <a class="btn btn-primary btn-sm mb-2" href="#" role="button">Details</a>
+                            <a class="btn btn-primary btn-sm mb-2" asp-controller="Products" asp-action="GetProductDetails" asp-route-id="@product.ProductId" role="button">Details</a>
                             <button type="button" class="btn btn-warning btn-sm mb-2 ms-2">
                                 Add to Cart<i class="bi bi-cart4"></i>
                             </button>
