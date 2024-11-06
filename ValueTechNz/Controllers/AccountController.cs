@@ -22,6 +22,10 @@ namespace ValueTechNz.Controllers
 
         public async Task<IActionResult> Register()
         {
+            if (_signInManager.IsSignedIn(User))
+            {
+                return RedirectToAction("Index", "Home"); 
+            }
             return View();
         }
 
@@ -32,6 +36,11 @@ namespace ValueTechNz.Controllers
         {
             try
             {
+                if (_signInManager.IsSignedIn(User))
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+
                 if (!ModelState.IsValid)
                 {
                    foreach(var modelStateEntry in ModelState.Values)
@@ -80,7 +89,49 @@ namespace ValueTechNz.Controllers
         // GET : Login View page
         public async Task<IActionResult> Login()
         {
+            if (_signInManager.IsSignedIn(User))
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
+        }
+
+        // POST : User Login
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginDto loginDto)
+        {
+            try
+            {
+                if (_signInManager.IsSignedIn(User))
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return View(loginDto);
+                }
+
+                var result = await _signInManager.PasswordSignInAsync(loginDto.Email, loginDto.Password, 
+                                                                      loginDto.rememberMe, false );
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ViewBag.InvalidPassword = "Invalid password.";
+                }
+                return View(loginDto);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while trying to login.");
+                TempData["ErrorMessage"] = "An error occurred while processing your login. Please try again.";
+                return RedirectToAction("Index", "Home");
+            }
         }
     }
 }

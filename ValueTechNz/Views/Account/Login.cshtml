@@ -7,7 +7,15 @@
         <h2 class="text-center mb-3">Login</h2>
         <hr />
 
+        @if(ViewBag.InvalidPassword != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @ViewBag.InvalidPassword
+            </div>
+        }
+
         <form method="post">
+           
             <div class="mb-3">
                 <label class="col-form-label" asp-for="Email"></label>
                 <input class="form-control" asp-for="Email" />
