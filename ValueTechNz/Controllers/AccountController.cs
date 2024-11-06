@@ -76,5 +76,11 @@ namespace ValueTechNz.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
+
+        // GET : Login View page
+        public async Task<IActionResult> Login()
+        {
+            return View();
+        }
     }
 }
