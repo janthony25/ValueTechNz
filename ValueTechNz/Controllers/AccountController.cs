@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NPOI.OpenXmlFormats.Dml.Chart;
 using ValueTechNz.Models;
@@ -132,6 +133,18 @@ namespace ValueTechNz.Controllers
                 TempData["ErrorMessage"] = "An error occurred while processing your login. Please try again.";
                 return RedirectToAction("Index", "Home");
             }
+        }
+
+        // GET - Only accessible if user is authorized
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            return View();
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return RedirectToAction("Index", "Home");
         }
     }
 }

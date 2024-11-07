@@ -9,6 +9,7 @@ using ValueTechNz.Repository.IRepository;
 
 namespace ValueTechNz.Controllers
 {
+    [Authorize(Roles = "admin")]
     [Route("/Admin/[controller]/{action=Products}/{id?}")]
     public class ProductsController : Controller
     {
